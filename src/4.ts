@@ -26,16 +26,42 @@ class Person implements IPerson {
 	getKey = (): number => this.key;
 }
 
-abstract class House {}
+abstract class House {
+	protected isDoorOpen: boolean = false;
+	protected key: number;
+	protected tenants: Array<IPerson> = [];
 
-class MyHouse implements House {}
+	constructor(key: IKey) {
+		this.key = key.getSignature();
+	}
+
+	abstract openDoor(key: IPerson): void;
+
+	comeIn = (tenant: IPerson) => {
+		if (this.isDoorOpen) {
+			this.tenants.push(tenant);
+			console.log(this.tenants);
+		}
+	};
+}
+
+class MyHouse extends House {
+	constructor(key: IKey) {
+		super(key);
+	}
+	openDoor = (person: IPerson) => {
+		if (person.getKey() === this.key) {
+			this.isDoorOpen = true;
+		}
+	};
+}
 
 const key = new Key();
 
 const person = new Person(key);
 const house = new MyHouse(key);
 
-house.openDoor(person.getKey());
+house.openDoor(person);
 
 house.comeIn(person);
 
