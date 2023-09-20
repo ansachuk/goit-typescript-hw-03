@@ -1,43 +1,25 @@
-interface IKey {
-	getSignature(): number;
-}
-
-class Key implements IKey {
-	private signature: number;
-
-	constructor() {
-		this.signature = Math.random();
-	}
+class Key {
+	private signature: number = Math.random();
 
 	getSignature = (): number => this.signature;
 }
 
-interface IPerson {
-	getKey(): number;
-}
-
-class Person implements IPerson {
-	private key: number;
-
-	constructor(key: IKey) {
-		this.key = key.getSignature();
-	}
-
-	getKey = (): number => this.key;
+class Person {
+	constructor(public key: Key) {}
 }
 
 abstract class House {
 	protected isDoorOpen: boolean = false;
 	protected key: number;
-	protected tenants: Array<IPerson> = [];
+	protected tenants: Array<Person> = [];
 
-	constructor(key: IKey) {
+	constructor(key: Key) {
 		this.key = key.getSignature();
 	}
 
-	abstract openDoor(key: IPerson): void;
+	abstract openDoor(key: Person): void;
 
-	comeIn = (tenant: IPerson) => {
+	comeIn = (tenant: Person) => {
 		if (this.isDoorOpen) {
 			this.tenants.push(tenant);
 			console.log(this.tenants);
@@ -46,11 +28,11 @@ abstract class House {
 }
 
 class MyHouse extends House {
-	constructor(key: IKey) {
+	constructor(key: Key) {
 		super(key);
 	}
-	openDoor = (person: IPerson) => {
-		if (person.getKey() === this.key) {
+	openDoor = (person: Person) => {
+		if (person.key.getSignature() === this.key) {
 			this.isDoorOpen = true;
 		}
 	};
