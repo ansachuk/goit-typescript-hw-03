@@ -4,8 +4,15 @@ class Key {
 	getSignature = (): number => this.signature;
 }
 
-class Person {
+interface IPerson {
+	key: Key;
+	getKey(): number;
+}
+
+class Person implements IPerson {
 	constructor(public key: Key) {}
+
+	getKey = (): number => this.key.getSignature();
 }
 
 abstract class House {
@@ -19,7 +26,7 @@ abstract class House {
 
 	abstract openDoor(key: Person): void;
 
-	comeIn = (tenant: Person) => {
+	comeIn = (tenant: Person): void => {
 		if (this.isDoorOpen) {
 			this.tenants.push(tenant);
 			console.log(this.tenants);
@@ -28,10 +35,7 @@ abstract class House {
 }
 
 class MyHouse extends House {
-	constructor(key: Key) {
-		super(key);
-	}
-	openDoor = (person: Person) => {
+	openDoor = (person: Person): void => {
 		if (person.key.getSignature() === this.key) {
 			this.isDoorOpen = true;
 		}
